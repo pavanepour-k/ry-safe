@@ -1,0 +1,42 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "ry-safe"
+version = "0.1.0"
+description = "Rust implementation for FastAPI-rs"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "pavanepour.k" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Rust",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Text Processing :: FastAPI-rs :: HTML",
+]
+
+[project.urls]
+Homepage = "https://github.com/pavanepour-k/ry-safe"
+Repository = "https://github.com/pavanepour-k/ry-safe"
+Issues = "https://github.com/pavanepour-k/ry-safe/issues"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+strip = true

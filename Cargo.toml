@@ -1,0 +1,33 @@
+[package]
+name = "ry-safe"
+version = "0.1.0"
+edition = "2021"
+authors = ["pavanepour.k"]
+license = "BSD-3-Clause"
+description = ""
+repository = "https://github.com/pavanepour-k/ry-safe"
+keywords = ["fastapi-rs", "html", "escape", "security", "rust", "python"]
+categories = ["text-processing", "web-programming"]
+
+[lib]
+name = "ry-safe"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38"] }
+simdutf8 = "0.1"
+v_escape = "0.18"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.4"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+strip = true
+
+[[bench]]
+name = "escape"
+harness = false
