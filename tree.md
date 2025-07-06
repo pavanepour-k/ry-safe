@@ -1,5 +1,5 @@
 ```plaintext
-ry-safe/
+rysafe/
 ├── .gitignore
 ├── Cargo.toml
 ├── pyproject.toml

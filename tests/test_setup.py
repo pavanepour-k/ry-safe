@@ -4,8 +4,8 @@ import typing as t
 
 import pytest
 
-from markupsafe import escape
-from markupsafe import Markup
+from rysafe import escape
+from rysafe import Markup
 
 
 @pytest.mark.parametrize(

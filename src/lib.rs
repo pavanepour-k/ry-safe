@@ -1,3 +1,3 @@
 pub mod core {
-    pub use markupsafe_core::*;
+    pub use rysafe_core::*;
 }

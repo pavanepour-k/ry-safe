@@ -1,5 +1,5 @@
-use markupsafe_rust::core::{escape, escape_silent};
 use proptest::prelude::*;
+use rysafe_core::{escape, escape_silent};
 
 #[test]
 fn test_empty_string() {

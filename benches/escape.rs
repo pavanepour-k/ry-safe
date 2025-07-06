@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use markupsafe_rust::core::escape;
+use rysafe::core::escape;
 
 fn bench_no_escape(c: &mut Criterion) {
     let text = "This is a simple text without any special characters that need escaping.";

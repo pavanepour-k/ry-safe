@@ -1,5 +1,5 @@
 [package]
-name = "ry-safe"
+name = "rysafe"
 version = "0.1.0"
 edition = "2021"
 authors = ["pavanepour.k"]
@@ -10,7 +10,7 @@ keywords = ["fastapi-rs", "html", "escape", "security", "rust", "python"]
 categories = ["text-processing", "web-programming"]
 
 [lib]
-name = "ry_safe"
+name = "rysafe"
 crate-type = ["cdylib", "rlib"]
 
 [workspace]
@@ -19,7 +19,7 @@ crate-type = ["cdylib", "rlib"]
 pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38"] }
 simdutf8 = "0.1"
 v_escape = "0.18"
-ry-safe-core = { path = "core" }
+rysafe_core = { path = "core" }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
