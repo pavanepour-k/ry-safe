@@ -42,7 +42,7 @@ fn create_unescape_table() -> HashMap<&'static str, char> {
 /// # Examples
 ///
 /// ```rust
-/// use rust_html_escape::escape_html;
+/// use rysafe::escape_html;
 ///
 /// assert_eq!(escape_html("<b>hello</b>"), "&lt;b&gt;hello&lt;/b&gt;");
 /// assert_eq!(escape_html("\"quoted\""), "&quot;quoted&quot;");
@@ -81,7 +81,7 @@ pub fn escape_html(input: &str) -> Cow<str> {
 /// # Examples
 ///
 /// ```rust
-/// use rust_html_escape::unescape_html;
+// use rysafe::unescape_html;
 ///
 /// assert_eq!(unescape_html("&lt;b&gt;hello&lt;/b&gt;"), "<b>hello</b>");
 /// assert_eq!(unescape_html("&quot;quoted&quot;"), "\"quoted\"");

@@ -8,7 +8,7 @@ repository = "https://github.com/pavanepour-k/rysafe"
 license = "MIT"
 keywords = ["html", "xml", "escaping", "security", "python"]
 categories = ["text-processing", "web-programming", "api-bindings"]
-readme = "../README.md"
+readme = "README.md"
 edition = "2021"
 rust-version = "1.87"
 

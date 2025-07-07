@@ -7,7 +7,7 @@ name = "rysafe"
 version = "0.1.0"
 description = "High-performance HTML/XML escaping library for Python, implemented in Rust"
 license = {text = "MIT"}
-readme = "../README.md"
+readme = "README.md"
 keywords = ["html", "xml", "escaping", "security", "fastapi"]
 classifiers = [
     "Development Status :: 4 - Beta",
