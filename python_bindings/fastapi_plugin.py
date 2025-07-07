@@ -19,8 +19,18 @@ from typing import Any, Callable, Optional, Union
 import functools
 import asyncio
 import json
-from fastapi import Request, Response
-from fastapi.responses import JSONResponse
+
+# Check if FastAPI is available
+try:
+    from fastapi import Request, Response
+    from fastapi.responses import JSONResponse
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    # Mock classes when FastAPI is not available
+    FASTAPI_AVAILABLE = False
+    Request = object
+    Response = object
+    JSONResponse = object
 
 try:
     from rysafe import escape, escape_silent, unescape
@@ -127,6 +137,8 @@ class AutoEscapeMiddleware:
     """Middleware for automatic HTML escaping of responses."""
     
     def __init__(self, app: Any, config: Optional[EscapeConfig] = None):
+        if not FASTAPI_AVAILABLE:
+            raise ImportError("FastAPI is required for AutoEscapeMiddleware")
         self.app = app
         self.config = config or _config
     

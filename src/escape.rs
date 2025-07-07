@@ -81,7 +81,7 @@ pub fn escape_html(input: &str) -> Cow<str> {
 /// # Examples
 ///
 /// ```rust
-// use rysafe::unescape_html;
+/// use rysafe::unescape_html;
 ///
 /// assert_eq!(unescape_html("&lt;b&gt;hello&lt;/b&gt;"), "<b>hello</b>");
 /// assert_eq!(unescape_html("&quot;quoted&quot;"), "\"quoted\"");
