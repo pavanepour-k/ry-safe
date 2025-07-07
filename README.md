@@ -303,7 +303,7 @@ python tests/security_tests.py
 ## 📋 Project Structure
 
 ```plaintext
-rysafe/
+rootfile/
 ├── rysafe/                    # Rust crate
 │   ├── src/
 │   │   ├── lib.rs             # Main library entry
