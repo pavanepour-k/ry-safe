@@ -39,15 +39,12 @@ jobs:
     
     - name: Check Rust formatting
       run: cargo fmt --check
-      working-directory: rysafe
     
     - name: Run Clippy
       run: cargo clippy --all-targets --all-features -- -D warnings
-      working-directory: rysafe
     
     - name: Check documentation
       run: cargo doc --no-deps --document-private-items
-      working-directory: rysafe
 
   # Rust testing
   rust-test:
@@ -79,11 +76,9 @@ jobs:
     
     - name: Run Rust tests
       run: cargo test --verbose
-      working-directory: rysafe
     
     - name: Run Rust tests with release mode
       run: cargo test --release --verbose
-      working-directory: rysafe
 
   # Python setup and testing
   python-test:
@@ -125,9 +120,7 @@ jobs:
         pip install fastapi httpx  # For FastAPI tests
     
     - name: Build Python extension
-      run: |
-        cd rysafe
-        maturin develop --release
+      run: maturin develop --release
     
     - name: Run Python tests
       run: |
@@ -195,15 +188,13 @@ jobs:
           ${{ runner.os }}-bench-cargo-
     
     - name: Run benchmarks
-      run: |
-        cd rysafe
-        cargo bench --bench escape_benchmarks -- --output-format html
+      run: cargo bench --bench escape_benchmarks -- --output-format html
     
     - name: Upload benchmark results
       uses: actions/upload-artifact@v3
       with:
         name: benchmark-results
-        path: rysafe/target/criterion/
+        path: target/criterion/
         retention-days: 30
 
   # Security audit
@@ -221,9 +212,7 @@ jobs:
       run: cargo install cargo-audit
     
     - name: Run security audit
-      run: |
-        cd rysafe
-        cargo audit
+      run: cargo audit
 
   # Build wheels for distribution
   build-wheels:
@@ -251,15 +240,13 @@ jobs:
       run: pip install maturin
     
     - name: Build wheels
-      run: |
-        cd rysafe
-        maturin build --release --strip --out dist
+      run: maturin build --release --strip --out dist
     
     - name: Upload wheels
       uses: actions/upload-artifact@v3
       with:
         name: wheels-${{ matrix.os }}
-        path: rysafe/dist/
+        path: dist/
 
   # Build source distribution
   build-sdist:
@@ -284,15 +271,13 @@ jobs:
       run: pip install maturin
     
     - name: Build source distribution
-      run: |
-        cd rysafe
-        maturin sdist --out dist
+      run: maturin sdist --out dist
     
     - name: Upload source distribution
       uses: actions/upload-artifact@v3
       with:
         name: sdist
-        path: rysafe/dist/
+        path: dist/
 
   # Test installation of built wheels
   test-wheels:
@@ -384,15 +369,13 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
     
     - name: Generate Rust docs
-      run: |
-        cd rysafe
-        cargo doc --no-deps --document-private-items
+      run: cargo doc --no-deps --document-private-items
     
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: rysafe/target/doc
+        publish_dir: target/doc
         destination_dir: rust-docs
 
   # Integration tests with real applications
@@ -419,9 +402,7 @@ jobs:
         pip install maturin fastapi uvicorn httpx pytest
     
     - name: Build and install package
-      run: |
-        cd rysafe
-        maturin develop --release
+      run: maturin develop --release
     
     - name: Test FastAPI integration
       run: |
@@ -480,9 +461,7 @@ jobs:
         pip install maturin markupsafe pytest
     
     - name: Build and install package
-      run: |
-        cd rysafe
-        maturin develop --release
+      run: maturin develop --release
     
     - name: Run compatibility tests
       run: |

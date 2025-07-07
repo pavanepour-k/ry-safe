@@ -9,6 +9,7 @@ use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyString};
 use std::borrow::Cow;
 
+// Import from our escape module
 use crate::escape::{escape_html, escape_html_bytes, unescape_html, unescape_html_bytes};
 
 /// Extract string or bytes from Python object.
@@ -205,7 +206,7 @@ fn _rysafe(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<MarkupClass>()?;
 
     // Version info
-    m.add("__version__", "0.1.0")?;
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", "rysafe contributors")?;
 
     Ok(())

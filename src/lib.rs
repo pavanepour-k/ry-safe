@@ -24,15 +24,21 @@
 //! assert_eq!(unescaped, "<b>bold</b>");
 //! ```
 
+// Declare modules
 pub mod error;
 pub mod escape;
 
+// Python bindings module (only when python feature is enabled)
 #[cfg(feature = "python")]
 pub mod python;
 
-// Re-export main functions for convenience
+// Re-export main functions and types for convenience
 pub use error::{EscapeError, EscapeResult};
 pub use escape::{escape_html, escape_html_bytes, unescape_html, unescape_html_bytes};
+
+// Re-export Python module when python feature is enabled
+#[cfg(feature = "python")]
+pub use python::*;
 
 /// Library version
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
