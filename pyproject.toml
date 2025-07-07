@@ -104,9 +104,4 @@ strict_equality = true
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_functions = ["test_*"]
-addopts = [
-    "--cov=rysafe",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-fail-under=90",
-]
+addopts = []

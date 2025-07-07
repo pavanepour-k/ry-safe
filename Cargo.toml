@@ -10,22 +10,18 @@ keywords = ["html", "xml", "escaping", "security", "python"]
 categories = ["text-processing", "web-programming", "api-bindings"]
 readme = "../README.md"
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.87"
 
 [lib]
 name = "rysafe"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["python"]
-python = ["dep:pyo3"]
+default = []
+python = []
+
 
 [dependencies]
-pyo3 = { version = "0.25.1", features = ["extension-module"], optional = true }
-
-[dev-dependencies]
-criterion = "0.6.0"
-
 [[bench]]
 name = "escape_benchmarks"
 harness = false

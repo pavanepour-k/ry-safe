@@ -50,7 +50,9 @@ except ImportError as e:
             return s.__html__()
         if isinstance(s, bytes):
             return html.escape(s.decode('utf-8', errors='replace')).encode('utf-8')
-        return html.escape(str(s))
+        if isinstance(s, str):
+            return html.escape(s)
+        raise TypeError('Expected str or bytes')
     
     def escape_silent(s):
         """Fallback escape_silent function."""
@@ -62,7 +64,9 @@ except ImportError as e:
         """Fallback HTML unescape function using Python's html module."""
         if isinstance(s, bytes):
             return html.unescape(s.decode('utf-8', errors='replace')).encode('utf-8')
-        return html.unescape(str(s))
+        if isinstance(s, str):
+            return html.unescape(s)
+        raise TypeError('Expected str or bytes')
     
     class Markup:
         """Fallback Markup class."""
@@ -83,8 +87,12 @@ except ImportError as e:
         def __html__(self):
             return self.content
 
-# Re-export for compatibility
-from . import fastapi_plugin
+# Re-export for compatibility if FastAPI is available
+try:
+    from . import fastapi_plugin  # type: ignore
+except Exception:
+    fastapi_plugin = None
+
 
 # Public API
 __all__ = [

@@ -23,7 +23,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
         components: rustfmt, clippy
     
     - name: Cache Rust dependencies
@@ -100,7 +100,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
     
     - name: Cache Rust dependencies
       uses: actions/cache@v3
@@ -234,7 +234,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
     
     - name: Install maturin
       run: pip install maturin
@@ -265,7 +265,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
     
     - name: Install maturin
       run: pip install maturin
@@ -395,7 +395,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
     
     - name: Install dependencies
       run: |
@@ -454,7 +454,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.70.0
+        toolchain: 1.87.0
     
     - name: Install dependencies
       run: |
