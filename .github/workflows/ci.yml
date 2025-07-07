@@ -321,7 +321,7 @@ jobs:
     
     - name: Install wheel
       run: |
-        pip install --find-links dist rust-html-escape
+        pip install --find-links dist rysafe
         python -c "import rysafe; print(rysafe.escape('<test>'))"
     
     - name: Test basic functionality

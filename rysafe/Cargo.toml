@@ -42,4 +42,4 @@ opt-level = 0
 
 [package.metadata.maturin]
 python-source = "python_bindings"
-module-name = "rysafe.escape"
+module-name = "rysafe._rysafe"

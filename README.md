@@ -35,7 +35,7 @@ pip install rysafe
 ### 2. Basic Usage (Python)
 
 ```python
-from rust_html_escape import escape, unescape
+from rysafe import escape, unescape
 
 # Escape HTML content
 assert escape('<script>alert("xss")</script>') == '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
@@ -44,12 +44,12 @@ assert escape('<script>alert("xss")</script>') == '&lt;script&gt;alert(&quot;xss
 assert unescape('&lt;b&gt;bold&lt;/b&gt;') == '<b>bold</b>'
 
 # Handle None values gracefully
-from rust_html_escape import escape_silent
+from rysafe import escape_silent
 assert escape_silent(None) is None
 assert escape_silent('<script>') == '&lt;script&gt;'
 
 # Use Markup class for safe HTML
-from rust_html_escape import Markup
+from rysafe import Markup
 safe_html = Markup('<b>Safe HTML</b>')
 print(safe_html)  # &lt;b&gt;Safe HTML&lt;/b&gt;
 ```
@@ -58,7 +58,7 @@ print(safe_html)  # &lt;b&gt;Safe HTML&lt;/b&gt;
 
 ```python
 from fastapi import FastAPI, Depends
-from rust_html_escape.fastapi_plugin import get_escaper, auto_escape_middleware
+from rysafe.fastapi_plugin import get_escaper, auto_escape_middleware
 
 app = FastAPI()
 
@@ -75,7 +75,7 @@ def auto_escape_endpoint(content: str):
     return {"content": content}  # Automatically escaped by middleware
 
 # Option 3: Route decorator
-from rust_html_escape.fastapi_plugin import escape_route_responses
+from rysafe.fastapi_plugin import escape_route_responses
 
 @app.get("/safe-response")
 @escape_route_responses()
@@ -91,7 +91,7 @@ assert escape(b'<script>') == b'&lt;script&gt;'
 assert unescape(b'&lt;script&gt;') == b'<script>'
 
 # Configure FastAPI escaping behavior
-from rust_html_escape.fastapi_plugin import EscapeConfig, configure_escaping
+from rysafe.fastapi_plugin import EscapeConfig, configure_escaping
 
 config = EscapeConfig(
     auto_escape=True,
@@ -110,7 +110,7 @@ escaped = escape(large_content)  # Blazing fast!
 ## 🏗️ Rust Usage (for library developers)
 
 ```rust
-use rust_html_escape::{escape_html, unescape_html};
+use rysafe::{escape_html, unescape_html};
 
 fn main() {
     // Basic escaping
@@ -131,7 +131,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rust_html_escape = "0.1.0"
+rysafe = "0.1.0"
 ```
 
 ---
@@ -155,7 +155,7 @@ rust_html_escape = "0.1.0"
 ### XSS Prevention
 
 ```python
-from rust_html_escape import escape
+from rysafe import escape
 
 # Dangerous inputs are safely escaped
 dangerous_inputs = [
@@ -232,24 +232,24 @@ pip install fastapi httpx markupsafe  # For testing
 
 ```bash
 # Build and install in development mode
-cd rust_html_escape
+cd rysafe
 maturin develop --release
 
 # Or build wheel
 maturin build --release --out dist
-pip install dist/rust_html_escape-*.whl
+pip install dist/rysafe-*.whl
 ```
 
 ### Running Tests
 
 ```bash
 # Rust tests
-cd rust_html_escape
+cd rysafe
 cargo test --verbose
 cargo test --release --verbose
 
 # Python tests
-pytest tests/ -v --cov=rust_html_escape --cov-report=term-missing
+pytest tests/ -v --cov=rysafe --cov-report=term-missing
 
 # FastAPI integration tests
 pytest tests/test_fastapi.py -v
@@ -257,7 +257,7 @@ pytest tests/test_fastapi.py -v
 # Compatibility tests with MarkupSafe
 python -c "
 import markupsafe
-import rust_html_escape
+import rysafe
 # Compare outputs for edge cases
 "
 ```
@@ -280,7 +280,7 @@ mypy python_bindings/ --ignore-missing-imports
 
 ```bash
 # Run Rust benchmarks
-cd rust_html_escape
+cd rysafe
 cargo bench --bench escape_benchmarks
 
 # View benchmark results
@@ -337,22 +337,22 @@ Create a `.env` file based on `.env.example`:
 
 ```bash
 # Performance tuning
-RUST_HTML_ESCAPE_BUFFER_SIZE=8192
-RUST_HTML_ESCAPE_ENABLE_SIMD=true
+RYSAFE_BUFFER_SIZE=8192
+RYSAFE_ENABLE_SIMD=true
 
 # Logging (for development)
-RUST_LOG=rust_html_escape=debug
+RUST_LOG=rysafe=debug
 RUST_BACKTRACE=1
 
 # Testing
-RUST_HTML_ESCAPE_TEST_LARGE_INPUTS=true
-RUST_HTML_ESCAPE_COMPATIBILITY_MODE=markupsafe
+RYSAFE_TEST_LARGE_INPUTS=true
+RYSAFE_COMPATIBILITY_MODE=markupsafe
 ```
 
 ### FastAPI Configuration
 
 ```python
-from rust_html_escape.fastapi_plugin import EscapeConfig, configure_escaping
+from rysafe.fastapi_plugin import EscapeConfig, configure_escaping
 
 # Global configuration
 config = EscapeConfig(
@@ -390,31 +390,6 @@ configure_escaping(config)
 - **Small strings** (<100 chars): Overhead may outweigh benefits
 - **Very large strings** (>1MB): Memory usage scales linearly
 - **Unicode-heavy content**: Slight performance impact vs pure ASCII
-
----
-
-### Quick Contribution Checklist
-
-- [ ] **Add tests** - Unit tests for all new features (90%+ coverage required)
-- [ ] **Security review** - All PRs undergo security review for XSS prevention
-- [ ] **Performance testing** - No regressions in benchmark suite
-- [ ] **Documentation** - Update README.md for user-facing changes
-
-### Development Workflow
-
-1. **Fork & Clone**: Fork the repo and clone your fork
-3. **Develop**: Make your changes following our coding standards
-4. **Test**: Run the full test suite (`cargo test && pytest`)
-5. **Lint**: Ensure code quality (`cargo clippy && black .`)
-6. **Commit**: Use conventional commits (`feat: add amazing feature`)
-8. **PR**: Open a Pull Request with detailed description
-
-### Code Style
-
-- **Rust**: Follow `rustfmt` defaults and `clippy` recommendations
-- **Python**: Use `black` for formatting and `ruff` for linting
-- **Comments**: Document why, not what - explain business logic and edge cases
-- **Tests**: Each function needs happy path, edge case, and error tests
 
 ---
 

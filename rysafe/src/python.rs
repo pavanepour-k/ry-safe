@@ -198,7 +198,7 @@ impl MarkupClass {
 
 /// Create the Python module.
 #[pymodule]
-fn rysafe(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _rysafe(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(escape, m)?)?;
     m.add_function(wrap_pyfunction!(escape_silent, m)?)?;
     m.add_function(wrap_pyfunction!(unescape, m)?)?;

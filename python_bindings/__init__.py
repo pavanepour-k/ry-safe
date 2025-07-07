@@ -25,7 +25,7 @@ __license__ = "MIT"
 
 try:
     # Import the Rust extension module
-    from rysafe.escape import (
+    from rysafe._rysafe import (
         escape,
         escape_silent,
         unescape,

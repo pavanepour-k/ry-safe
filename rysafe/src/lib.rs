@@ -34,9 +34,6 @@ pub mod python;
 pub use error::{EscapeError, EscapeResult};
 pub use escape::{escape_html, escape_html_bytes, unescape_html, unescape_html_bytes};
 
-#[cfg(feature = "python")]
-pub use python::rysafe;
-
 /// Library version
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 

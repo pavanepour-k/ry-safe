@@ -8,8 +8,6 @@ version = "0.1.0"
 description = "High-performance HTML/XML escaping library for Python, implemented in Rust"
 license = {text = "MIT"}
 readme = "../README.md"
-homepage = "https://github.com/pavanepour-k/rysafe"
-repository = "https://github.com/pavanepour-k/rysafe"
 keywords = ["html", "xml", "escaping", "security", "fastapi"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -57,7 +55,7 @@ test = [
 
 [tool.maturin]
 python-source = "python_bindings"
-module-name = "rysafe.escape"
+module-name = "rysafe._rysafe"
 strip = true
 features = ["pyo3/extension-module"]
 
@@ -107,7 +105,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_functions = ["test_*"]
 addopts = [
-    "--cov=rust_html_escape",
+    "--cov=rysafe",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-fail-under=90",
