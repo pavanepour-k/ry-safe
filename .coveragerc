@@ -1,0 +1,10 @@
+[run]
+source = rysafe
+omit = 
+    */tests/*
+    */__pycache__/*
+    */venv/*
+
+[report]
+precision = 2
+show_missing = True

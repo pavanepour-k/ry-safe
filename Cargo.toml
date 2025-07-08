@@ -22,6 +22,7 @@ python = ["dep:pyo3"]
 
 [dependencies]
 pyo3 = { version = "0.20.0", features = ["extension-module"], optional = true }
+html-escape = "0.2"
 
 [dev-dependencies]
 criterion = "0.6.0"
