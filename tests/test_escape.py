@@ -1,8 +1,9 @@
-import pytest
 import subprocess
 import sys
 
-from rysafe import escape, escape_silent, Markup
+import pytest
+
+from rysafe import Markup, escape, escape_silent
 
 
 class TestEscape:
@@ -20,7 +21,7 @@ class TestEscape:
 
     def test_mixed_content(self):
         text = 'Hello <world> & "friends"'
-        expected = Markup('Hello &lt;world&gt; &amp; &quot;friends&quot;')
+        expected = Markup("Hello &lt;world&gt; &amp; &quot;friends&quot;")
         assert escape(text) == expected
 
     def test_unicode(self):
@@ -35,7 +36,7 @@ class TestEscape:
         class HTMLObject:
             def __html__(self):
                 return "<b>custom</b>"
-        
+
         obj = HTMLObject()
         assert escape(obj) == Markup("<b>custom</b>")
 
@@ -51,12 +52,19 @@ class TestEscape:
         assert escape(45.67) == Markup("45.67")
 
 
-@pytest.mark.parametrize("py_version", ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"])
+@pytest.mark.parametrize(
+    "py_version", ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+)
 def test_version_compatibility(py_version, monkeypatch):
     monkeypatch.setenv("PY_VERSION", py_version)
     result = subprocess.run(
-        [sys.executable, "-c", "import rysafe; print(rysafe.escape('<test>'))"],
-        capture_output=True, text=True
+        [
+            sys.executable,
+            "-c",
+            "import rysafe; print(rysafe.escape('<test>'))",
+        ],
+        capture_output=True,
+        text=True,
     )
     assert result.returncode == 0
     assert "&lt;test&gt;" in result.stdout

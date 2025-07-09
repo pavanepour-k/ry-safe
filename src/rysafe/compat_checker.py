@@ -1,6 +1,8 @@
 """Version and package compatibility validation."""
-import sys
+
 import importlib.metadata
+import sys
+
 from packaging.version import parse as parse_version
 
 
@@ -13,12 +15,12 @@ def guard_async_feature():
 def validate_package(pkg: str, min_v: str, max_v: str):
     """
     Enforce package version constraints.
-    
+
     Args:
         pkg: Package name
         min_v: Minimum version
         max_v: Maximum version
-        
+
     Raises:
         ImportError: Version outside range
     """
@@ -26,7 +28,7 @@ def validate_package(pkg: str, min_v: str, max_v: str):
         current = parse_version(importlib.metadata.version(pkg))
     except importlib.metadata.PackageNotFoundError:
         raise ImportError(f"{pkg} not installed")
-    
+
     if not (parse_version(min_v) <= current <= parse_version(max_v)):
         raise ImportError(f"{pkg} version {current} outside allowed range")
 
