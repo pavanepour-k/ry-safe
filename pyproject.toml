@@ -1,107 +1,65 @@
 [build-system]
-requires = ["maturin>=1.4,<2.0"]
+requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
 name = "rysafe"
 version = "0.1.0"
-description = "High-performance HTML/XML escaping library for Python, implemented in Rust"
+description = "High-performance HTML/XML escaping library"
+authors = [{name = "rysafe contributors"}]
 license = {text = "MIT"}
 readme = "README.md"
-keywords = ["html", "xml", "escaping", "security", "fastapi"]
+requires-python = ">=3.8,<3.14"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Rust",
     "Topic :: Internet :: WWW/HTTP",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Text Processing :: Markup :: HTML",
-    "Topic :: Text Processing :: Markup :: XML",
     "Topic :: Security",
+    "Topic :: Text Processing :: Markup :: HTML",
 ]
-requires-python = ">=3.8"
-dependencies = []
 
 [project.optional-dependencies]
-fastapi = ["fastapi>=0.68.0"]
+fastapi = ["fastapi>=0.68.0", "starlette>=0.14.0"]
 dev = [
-    "pytest>=6.0",
-    "pytest-cov>=2.0",
-    "black>=22.0",
-    "ruff>=0.1.0",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "flake8>=5.0",
     "mypy>=1.0",
-    "maturin>=1.4,<2.0",
+    "black>=23.0",
+    "ruff>=0.1.0"
 ]
-test = [
-    "pytest>=6.0",
-    "pytest-cov>=2.0",
-    "markupsafe>=2.0",
-    "fastapi>=0.68.0",
-    "httpx>=0.24.0",
-]
-
-[project.urls]
-"Bug Reports" = "https://github.com/pavanepour-k/rysafe/issues"
-"Source" = "https://github.com/pavanepour-k/rysafe"
-"Documentation" = "https://github.com/pavanepour-k/rysafe#readme"
 
 [tool.maturin]
-python-source = "python_bindings"
-module-name = "rysafe._rysafe"
-strip = true
 features = ["pyo3/extension-module"]
+python-source = "src"
+module-name = "rysafe._rysafe_core"
 
 [tool.black]
-line-length = 80
-target-version = ['py38']
-include = '\.pyi?$'
+line-length = 79
+target-version = ["py38", "py39", "py310", "py311", "py312"]
 
 [tool.ruff]
-line-length = 80
+line-length = 79
 target-version = "py38"
-select = [
-    "E",
-    "W",
-    "F",
-    "I",
-    "B",
-    "C4",
-    "UP",
-]
-ignore = [
-    "E501",
-    "B008",
-    "C901",
-]
-
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
+select = ["E", "F", "I", "N", "W"]
 
 [tool.mypy]
 python_version = "3.8"
+strict = true
 warn_return_any = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
+python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = []
+addopts = "-v --tb=short --strict-markers"
