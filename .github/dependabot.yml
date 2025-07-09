@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # Rust dependencies
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "yourusername"  # Replace with your GitHub username
+    assignees:
+      - "yourusername"  # Replace with your GitHub username
+
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "yourusername"  # Replace with your GitHub username
+    assignees:
+      - "yourusername"  # Replace with your GitHub username
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "yourusername"  # Replace with your GitHub username
+    assignees:
+      - "yourusername"  # Replace with your GitHub username
