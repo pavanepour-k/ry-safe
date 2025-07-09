@@ -2,6 +2,10 @@
 name = "rysafe"
 version = "0.1.0"
 edition = "2021"
+authors = ["rysafe contributors"]
+license = "MIT"
+repository = "https://github.com/pavanepour-k/rysafe"
+description = "High-performance HTML/XML escaping library"
 
 [lib]
 name = "_rysafe_core"
@@ -9,7 +13,8 @@ crate-type = ["cdylib"]
 path = "src/core/lib.rs"
 
 [dependencies]
-pyo3 = "0.25.1"
+pyo3 = { version = "0.25.1", features = ["extension-module"] }
+lazy_static = "1.5"
 
 [features]
 default = ["pyo3/extension-module"]
@@ -19,3 +24,15 @@ lto = true
 codegen-units = 1
 opt-level = 3
 strip = true
+
+[profile.dev]
+opt-level = 0
+
+[profile.test]
+opt-level = 2
+
+# Benchmarking profile
+[profile.bench]
+opt-level = 3
+lto = true
+codegen-units = 1
