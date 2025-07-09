@@ -1,0 +1,194 @@
+"""
+MarkupSafe compatibility layer for rysafe.
+
+Provides drop-in replacement for markupsafe.Markup and escape functions.
+Follows SRP with compatibility as sole responsibility.
+"""
+import sys
+from typing import Any, Optional, Union
+
+from .compat_checker import validate_package
+from ._rysafe_core import escape as _escape, escape_silent as _escape_silent
+
+if sys.version_info < (3, 8):
+    raise RuntimeError("rysafe requires Python 3.8+")
+
+__all__ = ["Markup", "escape", "escape_silent", "soft_str", "soft_unicode"]
+
+
+class Markup(str):
+    """
+    String subclass for HTML/XML markup safe strings.
+    
+    Attributes:
+        None (inherits from str)
+    """
+    __slots__ = ()
+    
+    def __new__(cls, base: Any = "", encoding: Optional[str] = None, 
+                errors: str = "strict") -> "Markup":
+        """
+        Create new Markup instance.
+        
+        Args:
+            base: String or object to convert
+            encoding: Character encoding
+            errors: Error handling mode
+            
+        Returns:
+            Markup: Safe markup string
+        """
+        if hasattr(base, "__html__"):
+            base = base.__html__()
+        if encoding is None:
+            return super().__new__(cls, base)
+        return super().__new__(cls, base, encoding, errors)
+    
+    def __html__(self) -> str:
+        """Return self for HTML context."""
+        return self
+    
+    def __add__(self, other: Any) -> "Markup":
+        """Add with auto-escaping."""
+        if isinstance(other, str):
+            if not isinstance(other, Markup):
+                other = escape(other)
+        else:
+            other = escape(str(other))
+        return self.__class__(super().__add__(other))
+    
+    def __radd__(self, other: Any) -> "Markup":
+        """Reverse add with auto-escaping."""
+        if isinstance(other, str):
+            if not isinstance(other, Markup):
+                other = escape(other)
+        else:
+            other = escape(str(other))
+        return self.__class__(other.__add__(self))
+    
+    def __mul__(self, num: int) -> "Markup":
+        """Multiply preserving Markup type."""
+        return self.__class__(super().__mul__(num))
+    
+    __rmul__ = __mul__
+    
+    def __mod__(self, arg: Any) -> "Markup":
+        """Format with auto-escaping."""
+        if isinstance(arg, tuple):
+            arg = tuple(_escape_arg(item) for item in arg)
+        else:
+            arg = _escape_arg(arg)
+        return self.__class__(super().__mod__(arg))
+    
+    def __repr__(self) -> str:
+        """Representation showing Markup type."""
+        return f"Markup({super().__repr__()})"
+    
+    def join(self, seq: Any) -> "Markup":
+        """Join with auto-escaping."""
+        return self.__class__(super().join(escape(item) for item in seq))
+    
+    def split(self, *args: Any, **kwargs: Any) -> list:
+        """Split preserving Markup type."""
+        return [self.__class__(item) for item in super().split(*args, **kwargs)]
+    
+    def rsplit(self, *args: Any, **kwargs: Any) -> list:
+        """Reverse split preserving Markup type."""
+        return [self.__class__(item) for item in super().rsplit(*args, **kwargs)]
+    
+    def splitlines(self, keepends: bool = False) -> list:
+        """Split lines preserving Markup type."""
+        return [self.__class__(item) for item in super().splitlines(keepends)]
+    
+    def unescape(self) -> str:
+        """Unescape HTML entities."""
+        from ._rysafe_core import unescape
+        return unescape(self)
+    
+    def strip(self, chars: Optional[str] = None) -> "Markup":
+        """Strip preserving Markup type."""
+        return self.__class__(super().strip(chars))
+    
+    def lstrip(self, chars: Optional[str] = None) -> "Markup":
+        """Left strip preserving Markup type."""
+        return self.__class__(super().lstrip(chars))
+    
+    def rstrip(self, chars: Optional[str] = None) -> "Markup":
+        """Right strip preserving Markup type."""
+        return self.__class__(super().rstrip(chars))
+    
+    def format(self, *args: Any, **kwargs: Any) -> "Markup":
+        """Format with auto-escaping."""
+        args = tuple(_escape_arg(arg) for arg in args)
+        kwargs = {k: _escape_arg(v) for k, v in kwargs.items()}
+        return self.__class__(super().format(*args, **kwargs))
+    
+    def format_map(self, map_: dict) -> "Markup":
+        """Format with mapping and auto-escaping."""
+        map_ = {k: _escape_arg(v) for k, v in map_.items()}
+        return self.__class__(super().format_map(map_))
+    
+    def partition(self, sep: str) -> tuple:
+        """Partition preserving Markup type."""
+        parts = super().partition(sep)
+        return (self.__class__(parts[0]), parts[1], self.__class__(parts[2]))
+    
+    def rpartition(self, sep: str) -> tuple:
+        """Reverse partition preserving Markup type."""
+        parts = super().rpartition(sep)
+        return (self.__class__(parts[0]), parts[1], self.__class__(parts[2]))
+    
+    def replace(self, old: str, new: str, count: int = -1) -> "Markup":
+        """Replace preserving Markup type."""
+        return self.__class__(super().replace(old, new, count))
+
+
+def _escape_arg(arg: Any) -> Union[Markup, str]:
+    """Escape argument for Markup operations."""
+    if hasattr(arg, "__html__"):
+        return Markup(arg.__html__())
+    return escape(arg)
+
+
+def escape(s: Any) -> Markup:
+    """
+    Escape string for HTML/XML.
+    
+    Args:
+        s: Object to escape
+        
+    Returns:
+        Markup: Escaped safe string
+    """
+    if hasattr(s, "__html__"):
+        return Markup(s.__html__())
+    if isinstance(s, bytes):
+        s = s.decode("utf-8", "replace")
+    else:
+        s = str(s)
+    return Markup(_escape(s))
+
+
+def escape_silent(s: Any) -> Markup:
+    """
+    Escape string silently ignoring errors.
+    
+    Args:
+        s: Object to escape
+        
+    Returns:
+        Markup: Escaped safe string
+    """
+    if s is None:
+        return Markup()
+    return Markup(_escape_silent(str(s)))
+
+
+def soft_str(s: Any) -> str:
+    """Convert to string preserving Markup."""
+    if isinstance(s, str):
+        return s
+    return str(s)
+
+
+soft_unicode = soft_str
