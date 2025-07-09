@@ -3,7 +3,6 @@
 High-performance HTML/XML escaping library with Rust core and Python bindings.
 
 [![CI (core-init)](https://github.com/pavanepour-k/rysafe/actions/workflows/ci.yml/badge.svg?branch=core-init)](https://github.com/pavanepour-k/rysafe/actions/workflows/ci.yml?branch=core-init)
-[![Python Version](https://img.shields.io/pypi/pyversions/rysafe.svg)](https://pypi.org/project/rysafe/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features

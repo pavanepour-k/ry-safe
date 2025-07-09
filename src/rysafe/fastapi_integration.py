@@ -5,7 +5,7 @@ Provides middleware and response handlers for automatic HTML escaping.
 """
 
 import sys
-from typing import Any, Callable, List, Optional
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, List, Optional
 
 if sys.version_info < (3, 8):
     raise RuntimeError("FastAPI integration requires Python 3.8+")
@@ -19,6 +19,12 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
+    if TYPE_CHECKING:
+        # Type checking imports
+        from fastapi import Request, Response
+        from fastapi.responses import HTMLResponse
+        from starlette.middleware.base import BaseHTTPMiddleware
+        from starlette.types import ASGIApp
 
 __all__ = ["SafeHTMLResponse", "AutoEscapeMiddleware", "setup_auto_escape"]
 
@@ -34,7 +40,7 @@ def _ensure_fastapi() -> None:
         )
 
 
-class SafeHTMLResponse:
+class SafeHTMLResponse(HTMLResponse):
     """
     HTML response with automatic escaping.
 
@@ -51,29 +57,32 @@ class SafeHTMLResponse:
             return Markup("<h1>Hello World</h1>")  # Won't be escaped
     """
 
-    def __new__(cls, content: Any = None, **kwargs: Any) -> Any:
-        """Create SafeHTMLResponse instance."""
+    def __init__(self, content: Any = None, **kwargs: Any) -> None:
+        """
+        Initialize with auto-escaped content.
+
+        Args:
+            content: Response content
+            **kwargs: Additional response parameters
+        """
         _ensure_fastapi()
 
         from .markupsafe_compat import Markup, escape
 
-        # Create the actual response class
-        class _SafeHTMLResponse(HTMLResponse):
-            def __init__(self, content: Any = None, **kw: Any) -> None:
-                if content is not None and not isinstance(content, Markup):
-                    content = escape(content)
-                super().__init__(content, **kw)
+        if content is not None and not isinstance(content, Markup):
+            content = escape(content)
+        super().__init__(content, **kwargs)
 
-            def render(self, content: Any) -> bytes:
-                """Render content with escaping."""
-                if not isinstance(content, Markup):
-                    content = escape(content)
-                return content.encode(self.charset)
+    def render(self, content: Any) -> bytes:
+        """Render content with escaping."""
+        from .markupsafe_compat import Markup, escape
 
-        return _SafeHTMLResponse(content, **kwargs)
+        if not isinstance(content, Markup):
+            content = escape(content)
+        return str(content).encode(self.charset)
 
 
-class AutoEscapeMiddleware:
+class AutoEscapeMiddleware(BaseHTTPMiddleware):
     """
     Middleware for automatic HTML escaping.
 
@@ -88,61 +97,65 @@ class AutoEscapeMiddleware:
         )
     """
 
-    def __new__(
-        cls, app: Any, escape_paths: Optional[List[str]] = None
-    ) -> Any:
-        """Create AutoEscapeMiddleware instance."""
-        _ensure_fastapi()
+    def __init__(
+        self, app: ASGIApp, escape_paths: Optional[List[str]] = None
+    ) -> None:
+        """
+        Initialize middleware.
 
+        Args:
+            app: ASGI application
+            escape_paths: List of paths to escape
+        """
+        _ensure_fastapi()
+        super().__init__(app)
+        self.escape_paths = escape_paths or []
+
+    async def dispatch(
+        self,
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
+        """Process request with auto-escaping."""
         from .markupsafe_compat import Markup, escape
 
-        class _AutoEscapeMiddleware(BaseHTTPMiddleware):
-            def __init__(
-                self, app: ASGIApp, escape_paths: Optional[List[str]] = None
-            ) -> None:
-                super().__init__(app)
-                self.escape_paths = escape_paths or []
+        response = await call_next(request)
 
-            async def dispatch(
-                self, request: Request, call_next: Callable
-            ) -> Response:
-                """Process request with auto-escaping."""
-                response = await call_next(request)
+        if self._should_escape(request.url.path, response):
+            if hasattr(response, "body"):
+                try:
+                    # Handle both bytes and memoryview
+                    body_data = response.body
+                    if isinstance(body_data, memoryview):
+                        body_data = body_data.tobytes()
 
-                if self._should_escape(request.url.path, response):
-                    if hasattr(response, "body"):
-                        try:
-                            body = response.body.decode("utf-8")
-                            if not isinstance(body, Markup):
-                                escaped = escape(body)
-                                response.body = escaped.encode("utf-8")
-                                # Update content length
-                                response.headers["content-length"] = str(
-                                    len(response.body)
-                                )
-                        except (UnicodeDecodeError, AttributeError):
-                            # Skip binary responses or decode errors
-                            pass
+                    body = body_data.decode("utf-8")
+                    if not isinstance(body, Markup):
+                        escaped = escape(body)
+                        response.body = str(escaped).encode("utf-8")
+                        # Update content length
+                        response.headers["content-length"] = str(
+                            len(response.body)
+                        )
+                except (UnicodeDecodeError, AttributeError):
+                    # Skip binary responses or decode errors
+                    pass
 
-                return response
+        return response
 
-            def _should_escape(self, path: str, response: Response) -> bool:
-                """Determine if response should be auto-escaped."""
-                # Check content type
-                content_type = response.headers.get("content-type", "")
-                is_html = "text/html" in content_type
+    def _should_escape(self, path: str, response: Response) -> bool:
+        """Determine if response should be auto-escaped."""
+        # Check content type
+        content_type = response.headers.get("content-type", "")
+        is_html = "text/html" in content_type
 
-                # If specific paths are configured, use those
-                if self.escape_paths:
-                    path_match = any(
-                        path.startswith(p) for p in self.escape_paths
-                    )
-                    return is_html and path_match
+        # If specific paths are configured, use those
+        if self.escape_paths:
+            path_match = any(path.startswith(p) for p in self.escape_paths)
+            return is_html and path_match
 
-                # Otherwise, escape all HTML responses
-                return is_html
-
-        return _AutoEscapeMiddleware(app, escape_paths)
+        # Otherwise, escape all HTML responses
+        return is_html
 
 
 def setup_auto_escape(
@@ -169,6 +182,9 @@ def setup_auto_escape(
     """
     _ensure_fastapi()
 
+    # Import here to ensure FastAPI is available
+    from fastapi import FastAPI
+
     if not isinstance(app, FastAPI):
         raise TypeError(f"Expected FastAPI instance, got {type(app).__name__}")
 
@@ -193,4 +209,5 @@ def setup_auto_escape(
             return original_response_class(*args, **kwargs)
 
         # Set the factory as the default response class
-        app.response_class = safe_response_factory
+        # FastAPI dynamically adds response_class attribute, so we use setattr
+        setattr(app, "response_class", safe_response_factory)

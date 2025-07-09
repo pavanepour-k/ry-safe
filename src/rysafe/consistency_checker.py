@@ -22,7 +22,7 @@ class CodePatternComparator:
             base_path: Path to reference code
         """
         self.base_path = Path(base_path)
-        self.patterns = self._load_patterns()
+        self.patterns: Dict[str, Set[str]] = self._load_patterns()
 
     def _load_patterns(self) -> Dict[str, Set[str]]:
         """

@@ -40,3 +40,4 @@ perf.data.old
 flamegraph.svg
 
 *.pyd
+*_cache*

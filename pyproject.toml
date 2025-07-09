@@ -40,8 +40,8 @@ dev = [
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
-python-source = "src"
-module-name = "rysafe._rysafe_core"
+python-source = "src/rysafe"
+include = ["_rysafe_core.*", "py.typed"]
 
 [tool.black]
 line-length = 79
